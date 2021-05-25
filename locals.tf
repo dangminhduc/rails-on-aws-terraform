@@ -19,8 +19,8 @@ locals {
   azs       = data.aws_availability_zones.available.names
   cidr      = "10.0.0.0/16"
 
-  domain                = "dangminhduc.tk"
-  domain_lb_app         = "${local.prefix}-app-lb.${local.domain}"
-  cloudfront_domain     = "dangminhduc.tk"
-  domain_name_admin     = "admin.dangminhduc.tk"
+  domain            = "dangminhduc.tk"
+  domain_lb_app     = "${local.prefix}-app-lb.${local.domain}"
+  cloudfront_domain = "dangminhduc.tk"
+  domain_name_admin = "admin.dangminhduc.tk"
 }

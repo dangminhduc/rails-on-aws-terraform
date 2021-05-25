@@ -9,7 +9,7 @@ resource "aws_kms_alias" "terraform" {
 }
 
 # data "aws_kms_secrets" "secrets" {
-  
+
 # }
 
 # NOTE: RDSのストレージ暗号化用のKMS鍵
