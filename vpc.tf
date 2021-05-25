@@ -1,20 +1,3 @@
-# NOTE: デフォルトのVPC
-resource "aws_default_vpc" "default" {
-  tags = {
-    Name = "default"
-  }
-}
-
-resource "aws_flow_log" "default_vpc" {
-  log_destination      = aws_s3_bucket.logs.arn
-  log_destination_type = "s3"
-  traffic_type         = "ALL"
-  vpc_id               = aws_default_vpc.default.id
-
-  # NOTE: 先にBucket Policyで許可しないと作成に失敗するために指定。
-  depends_on = [aws_s3_bucket_policy.logs]
-}
-
 resource "aws_vpc" "main" {
   cidr_block           = local.cidr
   instance_tenancy     = "default"
