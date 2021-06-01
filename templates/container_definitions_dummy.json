@@ -1,0 +1,21 @@
+[
+    {
+        "name": "web",
+        "image": "medpeer/health_check",
+        "portMappings": [
+            {
+                "containerPort": 3000
+            }
+        ],
+        "environments": [
+            {
+                "name": "NGINX_PORT",
+                "value": 3000
+            },
+            {
+                "name": "HEALTH_CHECK_PATH",
+                "value": "/healthcheck"
+            }
+        ]
+    }
+]

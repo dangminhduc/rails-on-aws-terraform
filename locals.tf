@@ -25,4 +25,13 @@ locals {
   domain_lb_app     = "${local.prefix}-app-lb.${local.domain}"
   cloudfront_domain = "dangminhduc.tk"
   domain_name_admin = "admin.dangminhduc.tk"
+
+  secrets = {
+    master_key           = "this_is_the_rails_master_key"
+    database_url         = "mysql2://root:ASECUREDPASSWORD@db_master_host/db_name"
+    database_replica_url = "mysql2://root:ASECUREDPASSWORD@db_slave_host/db_name"
+    github_oauth_token   = "github_access_token_for_private_repositories"
+    redis_url            = "redis://redis_url"
+    datadog_api_key      = "datadog_api_key"
+  }
 }
