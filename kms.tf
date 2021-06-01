@@ -8,12 +8,65 @@ resource "aws_kms_alias" "terraform" {
   target_key_id = aws_kms_key.terraform.key_id
 }
 
+# NOTE: kms key for encrypting ecr docker images
+resource "aws_kms_key" "ecr" {
+  enable_key_rotation = true
+}
+
+resource "aws_kms_alias" "ecr" {
+  name          = "alias/${local.prefix}-ecr"
+  target_key_id = aws_kms_key.ecr.key_id
+}
+
+resource "aws_kms_key" "cloudwatch_log" {
+  enable_key_rotation = true
+}
+
+resource "aws_kms_alias" "cloudwatch_log" {
+  name          = "alias/${local.prefix}-cloudwatch-log"
+  target_key_id = aws_kms_key.cloudwatch_log.key_id
+}
+
 # data "aws_kms_secrets" "secrets" {
 # This is the place to put secret infomation such as database password, rails master key, etc
 #  secret {
 #    name = "db_password"
 #    payload = "somethingbase64encoded"
 #  }
+# secret {
+#   name    = "master_key"
+#   payload = ""
+# }
+
+# secret {
+#   name    = "database_url"
+#   payload = ""
+# }
+
+# secret {
+#   name    = "database_replica_url"
+#   payload = ""
+# }
+
+# secret {
+#   name    = "redis_url"
+#   payload = ""
+# }
+
+# secret {
+#   name    = "datadog_api_key"
+#   payload = ""
+# }
+
+# secret {
+#   name    = "aws_external_id_for_datadog"
+#   payload = ""
+# }
+
+# secret {
+#   name    = "github_oauth_token"
+#   payload = ""
+# }
 # }
 
 # NOTE: RDSのストレージ暗号化用のKMS鍵
