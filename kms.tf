@@ -9,7 +9,11 @@ resource "aws_kms_alias" "terraform" {
 }
 
 # data "aws_kms_secrets" "secrets" {
-
+# This is the place to put secret infomation such as database password, rails master key, etc
+#  secret {
+#    name = "db_password"
+#    payload = "somethingbase64encoded"
+#  }
 # }
 
 # NOTE: RDSのストレージ暗号化用のKMS鍵
