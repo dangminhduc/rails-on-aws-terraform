@@ -15,10 +15,12 @@ locals {
   env          = "stg"
   prefix       = "${local.env}-${local.service_name}"
 
-  rails_env = "production"
-  azs       = data.aws_availability_zones.available.names
-  cidr      = "10.0.0.0/16"
+  rails_env  = "production"
+  azs        = data.aws_availability_zones.available.names
+  cidr       = "10.0.0.0/16"
+  office_ips = ["1.2.3.4/32"]
 
+  db_password       = "thisisdatabasepassword" # tfsec:ignore:GEN002 disable sensitive attribute check because this is a template project
   domain            = "dangminhduc.tk"
   domain_lb_app     = "${local.prefix}-app-lb.${local.domain}"
   cloudfront_domain = "dangminhduc.tk"
