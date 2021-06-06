@@ -1,0 +1,10 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: "<TASK_DEFINITION>"
+        PlatformVersion: "1.4.0"
+        LoadBalancerInfo:
+          ContainerName: "#SERVER_ROLE#"
+          ContainerPort: "3000"

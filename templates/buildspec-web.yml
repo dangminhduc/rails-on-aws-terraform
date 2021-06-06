@@ -1,0 +1,62 @@
+---
+version: 0.2
+
+env:
+  variables:
+    DOCKER_BUILDKIT: "1"
+  parameter-store:
+    GITHUB_OAUTH_TOKEN: ${github_oauth_token_ssm_name}
+    RAILS_MASTER_KEY: ${rails_master_key_ssm_name}
+    DATABASE_URL: ${database_url_ssm_name}
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION > REVISION
+      - REPOSITORY_URL=${repository_url}
+  build:
+    commands:
+      - >-
+        docker build -t ${repository_url}:latest -f docker/deploy/Dockerfile
+        --build-arg BUNDLE_GITHUB__COM=$GITHUB_OAUTH_TOKEN:x-oauth-basic
+        --build-arg RAILS_ENV=${rails_env} .
+      - docker tag ${repository_url}:latest ${repository_url}:$IMAGE_TAG
+      - >-
+        docker run --rm
+        -e RAILS_ENV=${rails_env}
+        -e RAILS_MASTER_KEY=$RAILS_MASTER_KEY
+        -e DATABASE_URL=$DATABASE_URL
+        ${repository_url}:$IMAGE_TAG bin/rails db:prepare db:seed
+      - docker push ${repository_url}:$IMAGE_TAG
+
+      # NOTE: app タスク定義の生成
+      - aws s3 cp s3://${s3_bucket_build}/${task_def_app} .
+      - sed -i -e "s|#IMAGE_TAG#|$IMAGE_TAG|g" ${task_def_app}
+
+      # NOTE: admin タスク定義の生成
+      - aws s3 cp s3://${s3_bucket_build}/${task_def_admin} .
+      - sed -i -e "s|#IMAGE_TAG#|$IMAGE_TAG|g" ${task_def_admin}
+
+      # NOTE: sidekiq タスク定義の生成
+      - printf '[{"name":"worker","imageUri":"%s"}]' $REPOSITORY_URL:$IMAGE_TAG > imagedefinitions_worker.json
+
+      # NOTE: CodeDeploy用appspecファイルの生成
+      - aws s3 cp s3://${s3_bucket_build}/${webspec_template} ./appspec.yml
+      - sed -i -e "s|#SERVER_ROLE#|app|g" appspec.yml
+      # NOTE: CodeDeploy用adminspecファイルの生成
+      - aws s3 cp s3://${s3_bucket_build}/${webspec_template} ./adminspec.yml
+      - sed -i -e "s|#SERVER_ROLE#|admin|g" adminspec.yml
+
+artifacts:
+  files:
+    - ${task_def_app}
+    - ${task_def_admin}
+    - imagedefinitions_worker.json
+    - appspec.yml
+    - adminspec.yml
