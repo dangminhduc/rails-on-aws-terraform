@@ -20,11 +20,12 @@ locals {
   cidr       = "10.0.0.0/16"
   office_ips = ["1.2.3.4/32"]
 
-  db_password       = "thisisdatabasepassword" # tfsec:ignore:GEN002 disable sensitive attribute check because this is a template project
-  domain            = "dangminhduc.tk"
-  domain_lb_app     = "${local.prefix}-app-lb.${local.domain}"
-  cloudfront_domain = "dangminhduc.tk"
-  domain_name_admin = "admin.dangminhduc.tk"
+  db_password           = "thisisdatabasepassword" # tfsec:ignore:GEN002 disable sensitive attribute check because this is a template project
+  domain                = "dangminhduc.tk"
+  domain_lb_app         = "${local.prefix}-app-lb.${local.domain}"
+  cloudfront_domain     = "dangminhduc.tk"
+  domain_name_admin     = "admin.dangminhduc.tk"
+  cloudfront_shared_key = "somethinglong"
 
   secrets = {
     master_key           = "this_is_the_rails_master_key"
