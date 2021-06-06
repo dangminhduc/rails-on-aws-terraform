@@ -28,6 +28,15 @@ data "aws_iam_policy_document" "assume_codebuild" {
 }
 
 data "aws_iam_policy_document" "codebuild" {
+  # CodeBuild から GitHub v2 でコードを取得する権限
+  statement {
+    actions = [
+      "codestar-connections:UseConnection",
+    ]
+
+    resources = [aws_codestarconnections_connection.main.arn]
+  }
+
   statement {
     actions = [
       "s3:GetObject",

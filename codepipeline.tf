@@ -37,7 +37,7 @@ resource "aws_codepipeline" "deploy" {
         FullRepositoryId     = "medpeer-dev/resident-portal-rails"
         BranchName           = "develop"
         DetectChanges        = false # NOTE: コード変更検知トリガーを無効化。CI でテスト通過後、実行したい為。
-        OutputArtifactFormat = "CODE_ZIP"
+        OutputArtifactFormat = "CODEBUILD_CLONE_REF"
       }
     }
   }
